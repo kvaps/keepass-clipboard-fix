@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Fix clipboard operations
+clipboard_monitor (){
+    while true; do
+        local clip="`xsel -o -b`"
+        if [ "$clip" != "$firstclip" ]; then
+            echo "$clip" | xsel -i -b
+            local firstclip="$clip"
+        fi
+        sleep 0.25
+    done
+}
+trap 'kill $(jobs -p)' EXIT
+clipboard_monitor &
+
+mono --verify-all /usr/share/keepass/KeePass.exe "$@"
